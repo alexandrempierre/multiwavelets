@@ -190,3 +190,6 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,python,jupyternotebooks
 
+# references directory
+./references/
+
