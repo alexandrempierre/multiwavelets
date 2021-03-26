@@ -193,3 +193,6 @@ $RECYCLE.BIN/
 # references directory
 /references
 
+# envs
+.venv/
+.jl-env/
