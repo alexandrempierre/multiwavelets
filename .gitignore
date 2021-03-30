@@ -196,3 +196,4 @@ $RECYCLE.BIN/
 # envs
 .venv/
 .jl-env/
+venv/
