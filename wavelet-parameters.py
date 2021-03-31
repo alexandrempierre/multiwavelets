@@ -87,3 +87,13 @@ def scale(xs: np.ndarray, zero_moments: int,
         ]
         for j in range(m)
     ], dtype=np.float64)
+
+
+def s(points: int, zero_moments: int) -> np.ndarray:
+    """Given the number of points and of zero moments calculate s.
+    """
+    assert points % (2*zero_moments) == 0
+    # return np.array([
+    #     2*i*zero_moments for i in range(points // (2*zero_moments)
+    # ], dtype=np.int64)
+    return np.array([it for it in range(points, 2*zero_moments)], dtype=int)
