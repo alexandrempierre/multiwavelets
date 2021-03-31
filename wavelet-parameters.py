@@ -9,7 +9,7 @@ __author__ = 'Alexandre Pierre'
 __version__ = '0.0.1'
 
 
-from typing import Callable, Optional, Tuple
+from typing import Callable, Optional
 
 import numpy as np
 
