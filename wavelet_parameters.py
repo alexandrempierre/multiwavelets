@@ -64,7 +64,7 @@ def shift(xs: np.ndarray, zero_moments: int,
 
     return np.array([
         [
-            (xs[Idx[j, i, 1]] + xs[Idx[j, i, 0]]) / 2
+            (xs[Idx[j, i, 0]] + xs[Idx[j, i, 1]]) / 2
             for i in range(points // (2*zero_moments))
         ]
         for j in range(m)
@@ -82,7 +82,7 @@ def scale(xs: np.ndarray, zero_moments: int,
 
     return np.array([
         [
-            (xs[Idx[j, i, 0]] - xs[Idx[j, i, 1]]) / 2
+            (xs[Idx[j, i, 1]] - xs[Idx[j, i, 0]]) / 2
             for i in range(points // (2*zero_moments))
         ]
         for j in range(m)
