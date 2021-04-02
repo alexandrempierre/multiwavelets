@@ -4,9 +4,8 @@ auxiliary functions.
 """
 
 
-__all__ = ['shift', 'scale', 's']
+__all__ = ['shift', 'scale', 's', 'get_points', 'get_m']
 __author__ = 'Alexandre Pierre'
-__version__ = '0.0.1'
 
 
 from typing import Callable, Optional
