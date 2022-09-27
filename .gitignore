@@ -197,3 +197,10 @@ $RECYCLE.BIN/
 .venv/
 .jl-env/
 venv/
+bin/
+include/
+lib/
+lib64/
+share/
+pyvenv.cfg
+lib64
