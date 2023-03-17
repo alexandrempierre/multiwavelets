@@ -91,5 +91,3 @@ def sigma_list(
             )
             sigma[row].append((x[idx[1]] - x[idx[0]]) / 2)
     return sigma
-
-

@@ -3,6 +3,7 @@ __author__ = 'Alexandre Pierre <alexandrempierre [at] gmail [dot] com>'
 
 import numpy as np
 import step_0
+from test_step_0_values import Test_s_values, Test_mu_values, Test_sigma_values
 
 
 MAX_EXP = 16
@@ -46,10 +47,6 @@ class Test_s:
                 s_k_0(i) for i in range(n // (2*k))
             ])
             assert np.all(s_array_0 == s_callable_0)
-
-    def test_s_values_with_n_N_and_k_K(self):
-        s_k = step_0.s_callable(K)
-        assert s_k(0) == 0 and s_k(1) == 2
 
 
 class Test_mu:
@@ -125,14 +122,6 @@ class Test_mu:
                 ):
                     assert value_mu_list == value_mu_callable
 
-    def test_mu_values_with_n_N_and_k_K(self):
-        n, k = N, K
-        x = np.linspace(0, 1, n)
-        mu_values = step_0.mu_list(x, k, 0)
-        assert np.abs(mu_values[0][0] - 1/6) < 1e-15
-        assert np.abs(mu_values[0][1] - 5/6) < 1e-15
-        assert np.abs(mu_values[1][0] - 1/2) < 1e-15
-
 
 class Test_sigma:
     def test_one_based_sigma_callable_equals_zero_based_sigma_callable(self):
@@ -167,7 +156,7 @@ class Test_sigma:
                     values_sigma_1, values_sigma_0
                 ):
                     assert value_sigma_1 == value_sigma_0
-    
+
     def test_one_based_sigma_array_equals_zero_based_sigma_array(self):
         for n, k in INDICES:
             x = np.linspace(0, 1, n)
@@ -207,10 +196,9 @@ class Test_sigma:
                 ):
                     assert value_sigma_list == value_sigma_callable
 
-    def test_sigma_values_with_n_N_and_k_K(self):
-        n, k = N, K
-        x = np.linspace(0, 1, n)
-        sigma_values = step_0.sigma_list(x, k, 0)
-        assert np.abs(sigma_values[0][0] - 1/6) < 1e-15
-        assert np.abs(sigma_values[0][1] - 1/6) < 1e-15
-        assert np.abs(sigma_values[1][0] - 1/2) < 1e-15
+
+Test_s_values
+
+Test_mu_values
+
+Test_sigma_values
