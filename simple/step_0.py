@@ -1,93 +1,121 @@
+'''módulo step_0
+
+Valores e funções necessários para fazer os cáculos do passo 1 em diante.
+'''
+
 __all__ = [
     's_callable', 'mu_callable', 'sigma_callable',
     's_array', 'mu_list', 'sigma_list',
 ]
-__author__ = 'Alexandre Pierre <alexandrempierre [at] gmail [dot] com>'
+__author__ = 'Alexandre Pierre'
+__email__ = 'alexandrempierre [at] gmail [dot] com'
 
 
-from typing import Callable, List
+from collections.abc import Callable
 #
 import numpy as np
+import numpy.typing as npt
 
 
-def s_callable(k: int, start_idx: int = 0) -> Callable[[int], int]:
-    def s(i: int) -> int:
+def s_callable(k: int, start_idx: int = 0) -> 'Callable[[int], int]':
+    '''função para gerar o procedimento que vai calcular os valores de s'''
+    def s_inner(i: int) -> int:
+        '''calcula o valor de s'''
         return (i - start_idx)*2*k
-    return s
+    return s_inner
 
 
-def s_array(n: int, k: int, start_idx: int = 0) -> np.ndarray:
-    '''valores de s indexados por 0'''
+def s_array(n: int, k: int, start_idx: int = 0) -> npt.NDArray[np.int64]:
+    # pylint: disable=invalid-name
+    '''array de valores de s'''
     return np.array(
         [
             (i - start_idx)*2*k
             for i in range(start_idx, n // (2*k) + start_idx)
         ],
-        dtype=int
+        dtype=np.int64
     )
 
 
 def mu_callable(
-    x: np.ndarray,
+    xs: npt.NDArray[np.float64],
     k: int,
     start_idx: int = 0,
-) -> Callable[[int, int], float]:
-    def mu(j: int, i: int) -> float:
+) -> 'Callable[[int, int], float]':
+    # pylint: disable=invalid-name
+    '''função para gerar o procedimento que vai calcular os valores de mu
+(translação)'''
+    def mu_inner(j: int, i: int) -> float:
+        '''calcula o valor de mu (translação)'''
         idx = (
             (i - start_idx)*k*2**(j + 1 - start_idx),
             (i + 1 - start_idx)*k*2**(j + 1 - start_idx) - 1
         )
-        return (x[idx[0]] + x[idx[1]]) / 2
-    return mu
+        return (xs[idx[0]] + xs[idx[1]]) / 2
+    return mu_inner
 
 
 def mu_list(
-    x: np.ndarray,
+    xs: npt.NDArray[np.float64],
     k: int,
     start_idx: int = 0,
-) -> List[List[float]]:
-    n = len(x)
-    l = int(np.log2(n // k))
+) -> 'list[list[float]]':
+    # pylint: disable=invalid-name
+    '''lista de valores de mu (translação)'''
+    n = len(xs)
+    l = int(np.log2(n // k))  # noqa: E741
     mu = []
     for row, j in enumerate(range(start_idx, l + start_idx)):
         mu.append([])
-        for i in range(start_idx, n // (k*2**(j + 1 - start_idx)) + start_idx):
+        for i in range(
+            start_idx,
+            n // (k*2**(j + 1 - start_idx)) + start_idx
+        ):
             idx = (
                 (i - start_idx)*k*2**(j + 1 - start_idx),
                 (i + 1 - start_idx)*k*2**(j + 1 - start_idx) - 1
             )
-            mu[row].append((x[idx[0]] + x[idx[1]]) / 2)
+            mu[row].append((xs[idx[0]] + xs[idx[1]]) / 2)
     return mu
 
 
 def sigma_callable(
-    x: np.ndarray,
+    xs: npt.NDArray[np.float64],
     k: int,
     start_idx: int = 0,
-) -> Callable[[int, int], float]:
-    def sigma(j: int, i: int) -> float:
+) -> 'Callable[[int, int], float]':
+    # pylint: disable=invalid-name
+    '''função para gerar o procedimento que vai calcular os valores de sigma
+(dilatação)'''
+    def sigma_inner(j: int, i: int) -> float:
+        '''calcula o valor de sigma (dilatação)'''
         idx = (
             (i - start_idx)*k*2**(j + 1 - start_idx),
             (i + 1 - start_idx)*k*2**(j + 1 - start_idx) - 1
         )
-        return (x[idx[1]] - x[idx[0]]) / 2
-    return sigma
+        return (xs[idx[1]] - xs[idx[0]]) / 2
+    return sigma_inner
 
 
 def sigma_list(
-    x: np.ndarray,
+    xs: np.ndarray,
     k: int,
     start_idx: int = 0,
-) -> np.ndarray:
-    n = len(x)
-    l = int(np.log2(n // k))
+) -> 'list[list[np.ndarray]]':
+    # pylint: disable=invalid-name
+    '''lista de valores de sigma (dilatação)'''
+    n = len(xs)
+    l = int(np.log2(n // k))  # noqa: E741
     sigma = []
     for row, j in enumerate(range(start_idx, l + start_idx)):
         sigma.append([])
-        for i in range(start_idx, n // (k*2**(j + 1 - start_idx)) + start_idx):
+        for i in range(
+            start_idx,
+            n // (k*2**(j + 1 - start_idx)) + start_idx
+        ):
             idx = (
                 (i - start_idx)*k*2**(j + 1 - start_idx),
                 (i + 1 - start_idx)*k*2**(j + 1 - start_idx) - 1
             )
-            sigma[row].append((x[idx[1]] - x[idx[0]]) / 2)
+            sigma[row].append((xs[idx[1]] - xs[idx[0]]) / 2)
     return sigma
