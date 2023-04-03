@@ -1,4 +1,9 @@
-__author__ = 'Alexandre Pierre <alexandrempierre [at] gmail [dot] com>'
+'''módulo test_step_0
+'''
+
+
+__author__ = 'Alexandre Pierre'
+__email__ = 'alexandrempierre [at] gmail [dot] com'
 
 
 import numpy as np
@@ -21,6 +26,10 @@ N, K = 4, 1
 
 
 class Test_s:
+    # pylint: disable=invalid-name, missing-function-docstring
+    '''teste automatizado para verificar se os diferentes métodos de calcular
+a s chegam a resultados suficientemente próximos
+'''
     def test_one_based_s_callable_equals_zero_based_s_callable(self):
         for n, k in INDICES:
             s_k_0 = step_0.s_callable(k, 0)
@@ -50,6 +59,10 @@ class Test_s:
 
 
 class Test_mu:
+    # pylint: disable=invalid-name, missing-function-docstring
+    '''teste automatizado para verificar se os diferentes métodos de calcular
+a mu chegam a resultados suficientemente próximos
+'''
     def test_one_based_mu_callable_equals_zero_based_mu_callable(self):
         for n, k in INDICES:
             x = np.linspace(0, 1, n)
@@ -124,6 +137,10 @@ class Test_mu:
 
 
 class Test_sigma:
+    # pylint: disable=invalid-name, missing-function-docstring
+    '''teste automatizado para verificar se os diferentes métodos de calcular
+a sigma chegam a resultados suficientemente próximos
+'''
     def test_one_based_sigma_callable_equals_zero_based_sigma_callable(self):
         for n, k in INDICES:
             x = np.linspace(0, 1, n)
