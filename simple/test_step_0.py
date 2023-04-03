@@ -214,8 +214,8 @@ a sigma chegam a resultados suficientemente próximos
                     assert value_sigma_list == value_sigma_callable
 
 
-Test_s_values
+Test_s_values  # pylint: disable=pointless-statement
 
-Test_mu_values
+Test_mu_values  # pylint: disable=pointless-statement
 
-Test_sigma_values
+Test_sigma_values  # pylint: disable=pointless-statement
