@@ -7,6 +7,7 @@ __all__ = [
     'shifted_scaled_moments_matrices_list',
     'shifted_scaled_moments_matrices_callable',
     'shifted_scaled_moments_matrices_prod',
+    'shift_scale_matrix',
 ]
 __author__ = 'Alexandre Pierre'
 __email__ = 'alexandrempierre [at] gmail [dot] com'
@@ -16,7 +17,7 @@ from collections.abc import Callable
 from copy import deepcopy
 import numpy as np
 import numpy.typing as npt
-from scipy.special import binom
+from scipy.special import comb
 import step_0
 
 
@@ -136,15 +137,18 @@ def moments_matrices(
 def shift_scale_matrix(
     k: int,
     mu: float,
-    sigma: float
+    sigma: float,
 ) -> npt.NDArray[np.float64]:
     # pylint: disable=invalid-name
     '''calcula matriz de aplicação de translação e dilatação S(mu, sigma)'''
     return np.array([
-        [binom(c, r) * mu**(c - r) / sigma**(c - r) for c in range(2*k)]
+        [
+            comb(c, r, exact=True) * np.power(mu, c - r) / np.power(sigma, c)
+            if r <= c else 0
+            for c in range(2*k)
+        ]
         for r in range(2*k)
     ])
-
 
 def shifted_scaled_moments_matrices_prod(
     xs: npt.NDArray[np.float64],
