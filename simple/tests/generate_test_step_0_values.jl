@@ -54,7 +54,7 @@ for exp_n=2:16
 """
   end
 end
-open("test_step_0_values.py", "w") do io
+open("step_0_values.py", "w") do io
   write(
     io,
     """__all__ = ['Test_s_values', 'Test_mu_values', 'Test_sigma_values']
