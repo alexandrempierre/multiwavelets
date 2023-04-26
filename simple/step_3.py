@@ -70,4 +70,5 @@ saída do passo 3
             M = np.concat((upper, lower), axis=0)
             curr_Ms.append(M)
             Us[-1].append(step_2.orthonormalize(M))
+        prev_Ms = curr_Ms[:]
     return Us
