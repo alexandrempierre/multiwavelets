@@ -1,4 +1,4 @@
-'''módulo test_step_0
+'''módulo step_0
 '''
 
 
@@ -7,8 +7,10 @@ __email__ = 'alexandrempierre [at] gmail [dot] com'
 
 
 import numpy as np
-import step_0
-from test_step_0_values import Test_s_values, Test_mu_values, Test_sigma_values
+from simple import step_0
+from simple.tests.step_0_values import (
+    Test_s_values, Test_mu_values, Test_sigma_values
+)
 
 
 MAX_EXP = 16

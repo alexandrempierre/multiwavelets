@@ -1,4 +1,4 @@
-'''módulo test_step_1
+'''módulo step_1
 '''
 
 # testar se callable e list são próximos o suficiente um do outro e do prod
@@ -9,8 +9,7 @@ __email__ = 'alexandrempierre [at] gmail [dot] com'
 
 import numpy as np
 from numpy import linalg
-import step_0
-import step_1
+from simple import step_0, step_1
 
 
 MAX_EXP = 8
