@@ -9,6 +9,7 @@ __email__ = 'alexandrempierre [at] gmail [dot] com'
 
 import numpy as np
 from numpy import linalg
+from scipy.special import comb
 from simple import step_0, step_1
 
 
@@ -92,3 +93,32 @@ próximos
             # assert all(
             #     [np.all(M == Ms_callable(i)) for i, M in enumerate(Ms_prod)]
             # )
+    
+    def test_M_values(self):
+        n, k = 8, 2
+        xs = np.linspace(0, 1, n, endpoint=True)
+        mus = step_0.mu_list(xs, k)
+        sigmas = step_0.sigma_list(xs, k)
+        ss = step_0.s_array(n, k)
+        Ms = step_1.shifted_scaled_moments_matrices_list(xs, k, mus, sigmas, ss)
+
+
+class Test_S:
+    # pylint: disable=invalid-name, missing-function-docstring
+    '''teste automatizado para verificar se os diferentes métodos de calcular
+a matriz de momentos transladada e dilatada chegam a resultados suficientemente
+próximos
+'''
+    def test_S_value(self):
+        k, mu, sigma = 2, 3, 7
+        S_value = np.array([
+            [
+                comb(c - 1, r - 1, exact=True) * (-mu)**(c - r) /sigma**(c - 1)
+                if r <= c else 0
+                for c in range(1, 2*k + 1)
+            ]
+            for r in range(1, 2*k + 1)
+        ])
+        S = step_1.shift_scale_matrix(k, mu, sigma)
+        assert np.allclose(S_value, S, )
+        assert np.all(S_value == S)

@@ -18,7 +18,7 @@ from copy import deepcopy
 import numpy as np
 import numpy.typing as npt
 from scipy.special import comb
-import step_0
+from simple import step_0
 
 
 def shifted_scaled_moments_matrices(
@@ -143,7 +143,7 @@ def shift_scale_matrix(
     '''calcula matriz de aplicação de translação e dilatação S(mu, sigma)'''
     return np.array([
         [
-            comb(c, r, exact=True) * np.power(mu, c - r) / np.power(sigma, c)
+            comb(c, r, exact=True) * np.power(-mu, c - r) / np.power(sigma, c)
             if r <= c else 0
             for c in range(2*k)
         ]
