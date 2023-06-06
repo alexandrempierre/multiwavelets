@@ -1,8 +1,11 @@
-'''módulo step_3
+'''módulo step_4
 '''
 
 
-__all__ = []
+__all__ = [
+    'operator_matrix', 'operator_matrix_extracts', 'extract_params',
+    'extract_submatrices', 'is_zero_or_power_of_2',
+]
 __author__ = 'Alexandre Pierre'
 __email__ = 'alexandrempierre [at] gmail [dot] com'
 
@@ -13,18 +16,16 @@ import numpy as np
 import numpy.typing as npt
 
 
-# def singularity_handling
-
 def operator_matrix(
     xs: npt.NDArray[float],
-    K: Callable[[float, float], float],
+    kernel_fn: Callable[[float, float], float],
 ) -> npt.NDArray[float]:
     # pylint: disable=invalid-name
     '''matriz do operador usando método de quadratura do trapézio'''
     n = xs.shape
     return np.array([
         [
-            0 if i == j else 1 / (n - 1) * K(x_i, x_j)
+            0 if i == j else 1 / (n - 1) * kernel_fn(x_i, x_j)
             for j, x_j in enumerate(xs)
         ]
         for i, x_i in enumerate(xs)
@@ -49,7 +50,10 @@ def operator_matrix_extracts(
 
 def extract_params(n: int, k: int) -> Iterator[tuple[int, int, bool]]:
     # pylint: disable=invalid-name
-    '''gerar parâmetros para extrair submatrizes'''
+    '''gerar parâmetros (índice inicial $start_idx, tamanho da submatriz
+    quadrada $sub_size e se índices ímpares devem ser pulados $jmp_odd) para
+    extrair submatrizes
+'''
     start_idx, sub_size = 0, k
     while start_idx < n:
         jmp_odd = is_zero_or_power_of_2(start_idx // k)
@@ -80,6 +84,5 @@ def extract_submatrices(
 
 
 def is_zero_or_power_of_2(value: int) -> bool:
-    # pylint: disable=invalid-name
-    # pylint: disable=missing-function-docstring
+    # pylint: disable=invalid-name, missing-function-docstring
     return value & (value - 1) == 0

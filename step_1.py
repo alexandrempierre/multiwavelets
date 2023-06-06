@@ -18,7 +18,8 @@ from copy import deepcopy
 import numpy as np
 import numpy.typing as npt
 from scipy.special import comb
-from simple import step_0
+# from simple import step_0
+from . import step_0
 
 
 def shifted_scaled_moments_matrices(
@@ -166,3 +167,17 @@ são chamadas de M'_{1,i}
         matrix @ shift_scale_matrix(k, mu, sigma)
         for matrix, mu, sigma in zip(matrices, mus[0], sigmas[0])
     ]
+
+
+# if __name__ == '__main__':
+#     n, k = 8, 2
+#     xs = np.linspace(0, 1, n, endpoint=True)
+#     mus = step_0.mu_list(xs, k)
+#     sigmas = step_0.sigma_list(xs, k)
+#     ss = step_0.s_array(n, k)
+#     Ms = shifted_scaled_moments_matrices_list(xs, k, mus, sigmas, ss)
+#     print(xs, end='\n\n')
+#     print(*mus, sep='\n', end='\n\n')
+#     print(*sigmas, sep='\n', end='\n\n')
+#     print(ss, end='\n\n')
+#     print(*Ms, sep='\n\n')

@@ -10,7 +10,9 @@ __email__ = 'alexandrempierre [at] gmail [dot] com'
 import numpy as np
 from numpy import linalg
 from scipy.special import comb
-from simple import step_0, step_1
+# from simple import step_0, step_1
+# from .. import step_0, step_1
+import simple
 
 
 MAX_EXP = 8
@@ -36,10 +38,10 @@ próximos
     def test_M_callable_equals_M(self):
         for n, k in INDICES:
             xs = np.linspace(0, 1, n, endpoint=True)
-            Ms_callable = step_1.shifted_scaled_moments_matrices_callable(
+            Ms_callable = simple.step_1.shifted_scaled_moments_matrices_callable(
                 xs, k
             )
-            Ms = step_1.shifted_scaled_moments_matrices(xs, k)
+            Ms = simple.step_1.shifted_scaled_moments_matrices(xs, k)
             assert np.all(
                 linalg.norm(M - Ms_callable(i), np.inf, axis=1) < 1e-16
                 for i, M in enumerate(Ms)
@@ -54,13 +56,13 @@ próximos
     def test_M_callable_equals_M_list(self):
         for n, k in INDICES:
             xs = np.linspace(0, 1, n, endpoint=True)
-            Ms_callable = step_1.shifted_scaled_moments_matrices_callable(
+            Ms_callable = simple.step_1.shifted_scaled_moments_matrices_callable(
                 xs, k
             )
-            mus = step_0.mu_list(xs, k)
-            sigmas = step_0.sigma_list(xs, k)
-            ss = step_0.s_array(n, k)
-            Ms_list = step_1.shifted_scaled_moments_matrices_list(
+            mus = simple.step_0.mu_list(xs, k)
+            sigmas = simple.step_0.sigma_list(xs, k)
+            ss = simple.step_0.s_array(n, k)
+            Ms_list = simple.step_1.shifted_scaled_moments_matrices_list(
                 xs, k, mus, sigmas, ss
             )
             assert np.all(
@@ -78,12 +80,12 @@ próximos
     def test_M_callable_nears_M_prod(self):
         for n, k in INDICES:
             xs = np.linspace(0, 1, n, endpoint=True)
-            Ms_callable = step_1.shifted_scaled_moments_matrices_callable(
+            Ms_callable = simple.step_1.shifted_scaled_moments_matrices_callable(
                 xs, k
             )
-            mus = step_0.mu_list(xs, k)
-            sigmas = step_0.sigma_list(xs, k)
-            Ms_prod = step_1.shifted_scaled_moments_matrices_prod(
+            mus = simple.step_0.mu_list(xs, k)
+            sigmas = simple.step_0.sigma_list(xs, k)
+            Ms_prod = simple.step_1.shifted_scaled_moments_matrices_prod(
                 xs, k, mus, sigmas
             )
             assert np.all(
@@ -93,14 +95,30 @@ próximos
             # assert all(
             #     [np.all(M == Ms_callable(i)) for i, M in enumerate(Ms_prod)]
             # )
-    
+
     def test_M_values(self):
         n, k = 8, 2
         xs = np.linspace(0, 1, n, endpoint=True)
-        mus = step_0.mu_list(xs, k)
-        sigmas = step_0.sigma_list(xs, k)
-        ss = step_0.s_array(n, k)
-        Ms = step_1.shifted_scaled_moments_matrices_list(xs, k, mus, sigmas, ss)
+        mus = simple.step_0.mu_list(xs, k)
+        sigmas = simple.step_0.sigma_list(xs, k)
+        ss = simple.step_0.s_array(n, k)
+        Ms = simple.step_1.shifted_scaled_moments_matrices_list(xs, k, mus, sigmas, ss)
+        Ms_value = [
+            np.array([
+                [1, -1,   1,   -1   ],
+                [1, -1/3, 1/9, -1/27],
+                [1,  1/3, 1/9,  1/27],
+                [1,  1,   1,    1   ]
+            ]),
+            np.array([
+                [1, -1,   1,   -1   ],
+                [1, -1/3, 1/9, -1/27],
+                [1,  1/3, 1/9,  1/27],
+                [1,  1,   1,    1   ]
+            ]),
+        ]
+        assert np.allclose(Ms_value[0], Ms[0])
+        assert np.allclose(Ms_value[1], Ms[1])
 
 
 class Test_S:
@@ -119,6 +137,6 @@ próximos
             ]
             for r in range(1, 2*k + 1)
         ])
-        S = step_1.shift_scale_matrix(k, mu, sigma)
+        S = simple.step_1.shift_scale_matrix(k, mu, sigma)
         assert np.allclose(S_value, S, )
         assert np.all(S_value == S)

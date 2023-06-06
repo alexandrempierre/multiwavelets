@@ -15,8 +15,7 @@ from collections.abc import Iterator
 import numpy as np
 import numpy.typing as npt
 #
-import step_1
-import step_2
+from simple import step_1, step_2
 
 
 def shift_scale_matrices(

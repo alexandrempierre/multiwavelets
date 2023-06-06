@@ -1,1 +1,0 @@
-[Teste das matrizes S](https://colab.research.google.com/drive/14OMLKllQfGxvQRrO0OHLkMY9gmZIVERU?usp=sharing)
