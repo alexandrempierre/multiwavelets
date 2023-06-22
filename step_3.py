@@ -1,3 +1,4 @@
+# ruff: noqa: E741
 '''módulo step_3
 '''
 
@@ -15,7 +16,7 @@ from collections.abc import Iterator
 import numpy as np
 import numpy.typing as npt
 #
-from simple import step_1, step_2
+from . import step_1, step_2
 
 
 def shift_scale_matrices(
@@ -28,18 +29,18 @@ def shift_scale_matrices(
     '''produz as matrizes S_1 e S_2 que no texto são usadas para gerar as
 matrizes de momentos indexadas por j > 1 (no texto)
 '''
-    l = np.log2(n // k)
+    l = int(np.log2(n // k))
     for j in range(1, l):
         for i in range(n // (k * 2**j)):
             S_1 = step_1.shift_scale_matrix(
                 k,
-                (mus[j, i] - mus[j - 1, 2*i]) / sigmas[j - 1, 2*i],
-                sigmas[j, i] / sigmas[j - 1, 2*i]
+                (mus[j][i] - mus[j - 1][2*i]) / sigmas[j - 1][2*i],
+                sigmas[j][i] / sigmas[j - 1][2*i]
             )
             S_2 = step_1.shift_scale_matrix(
                 k,
-                (mus[j, i] - mus[j - 1, 2*i + 1]) / sigmas[j - 1, 2*i + 1],
-                sigmas[j, i] / sigmas[j - 1, 2*i + 1]
+                (mus[j][i] - mus[j - 1][2*i + 1]) / sigmas[j - 1][2*i + 1],
+                sigmas[j][i] / sigmas[j - 1][2*i + 1]
             )
             yield S_1, S_2
 
