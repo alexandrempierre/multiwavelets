@@ -1,3 +1,4 @@
+# ruff: noqa: E741
 '''módulo step_0
 
 Valores e funções necessários para fazer os cáculos do passo 1 em diante.
@@ -105,7 +106,7 @@ def sigma_list(
     # pylint: disable=invalid-name
     '''lista de valores de sigma (dilatação)'''
     n = len(xs)
-    l = int(np.log2(n // k))  # noqa: E741
+    l = int(np.log2(n // k))
     sigma = []
     for row, j in enumerate(range(start_idx, l + start_idx)):
         sigma.append([])

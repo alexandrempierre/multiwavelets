@@ -1,3 +1,4 @@
+# ruff: noqa: E741
 '''módulo step_0
 '''
 
@@ -7,8 +8,8 @@ __email__ = 'alexandrempierre [at] gmail [dot] com'
 
 
 import numpy as np
-from simple import step_0
-from simple.tests.step_0_values import (
+from .. import step_0
+from .step_0_values import (
     Test_s_values, Test_mu_values, Test_sigma_values
 )
 
