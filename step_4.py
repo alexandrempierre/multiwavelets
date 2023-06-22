@@ -70,7 +70,7 @@ def extract_submatrices(
     jmp_odd: bool,
 ) ->  npt.NDArray[float]:
     # pylint: disable=invalid-name
-    '''extrai submatrizees'''
+    '''extrai submatrizes'''
     n = T.shape[0]
     X = np.zeros_like(T)
     for step, idx in enumerate(range(start_idx, n, sub_size)):
