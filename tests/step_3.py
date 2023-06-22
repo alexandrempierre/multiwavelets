@@ -7,7 +7,7 @@ __email__ = 'alexandrempierre [at] gmail [dot] com'
 
 import numpy as np
 #
-from simple import step_0, step_3
+from .. import step_0, step_3
 
 
 MAX_EXP = 4
@@ -33,4 +33,20 @@ class Test_S1_S2:
         sigmas = step_0.sigma_list(xs, k)
         matrices = next(step_3.shift_scale_matrices(n, k, mus, sigmas), None)
         assert matrices is not None
-        assert np.allclose(a, b)
+        S1, S2 = matrices
+        assert np.all(
+            S1 == np.array([
+                [1, -14/9,  784/81, -21952/729],
+                [0,   7/3, -392/27,    5488/81],
+                [0,     0,    49/9,   -1372/27],
+                [0,     0,       0,     343/27],
+            ])
+        )
+        assert np.all(
+            S2 == np.array([
+                [1, 4/7, 16/49, 64/323],
+                [0,   1,   8/7,  48/49],
+                [0,   0,     1,   12/7],
+                [0,   0,     0,      1],
+            ])
+        )
