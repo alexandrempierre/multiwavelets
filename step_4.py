@@ -1,115 +1,133 @@
+# ruff: noqa: E741
 '''módulo step_4
 '''
 
 
 __all__ = [
     'operator_matrix', 'extract_submatrices', 'is_zero_or_power_of_2',
-    'Submatrix',
+    'visualize_blocks', 'remove_singularity'
 ]
 __author__ = 'Alexandre Pierre'
 __email__ = 'alexandrempierre [at] gmail [dot] com'
 
 
-import functools as ft
-import operator as op
-#
+import itertools as it
+import math
+
 from collections.abc import Callable
-from dataclasses import dataclass
-#
+
 import numpy as np
 import numpy.typing as npt
 
 
 NDArrayFloat = npt.NDArray[np.float64]
+Real2DFunction = Callable[[float, float], float]
 
 
-@dataclass
-class Submatrix:
-    '''submatriz de operador a ser aproximada por uma matriz de posto k'''
-    subarray: NDArrayFloat
-    row_start: int
-    col_start: int
-
-    def __eq__(self, s: 'Submatrix') -> bool:
-        # pylint: disable=invalid-name
-        return (
-            self.row_start == s.row_start
-            and self.col_start == s.col_start
-            and np.all(self.subarray == s.subarray)
-        )
-
-    def __hash__(self) -> int:
-        astuple = tuple(
-            (row, ) if isinstance(row, np.number) else tuple(row)
-            for row in self.subarray
-        )
-        return hash(
-            (astuple, self.row_start, self.col_start)
-        )
+def remove_singularity(
+    f: Real2DFunction,
+    x: float,
+    y: float,
+    fallback: float = 0,
+) -> float:
+    try:
+        z = f(x, y)
+    except ZeroDivisionError:
+        return fallback
+    if not math.isfinite(z):
+        return fallback
+    return z
 
 
 def operator_matrix(
     xs: NDArrayFloat,
-    kernel_fn: Callable[[float, float], float],
+    kernel_fn: Real2DFunction,
 ) -> NDArrayFloat:
     # pylint: disable=invalid-name
     '''matriz do operador usando método de quadratura do trapézio'''
-    n = xs.shape
+    n = xs.shape[0]
     return np.array([
         [
-            0 if i == j else 1 / (n - 1) * kernel_fn(x_i, x_j)
+            remove_singularity(kernel_fn, x_i, x_j, fallback=0) / (n - 1)
             for j, x_j in enumerate(xs)
         ]
         for i, x_i in enumerate(xs)
     ])
 
 
+def extract_symmetric_block(
+    M: NDArrayFloat,
+    index: int,
+    size: int,
+) -> dict[tuple[int, int], int]:
+    '''Apesar do nome indicar extração de blocos, essa função apenas usa a
+tupla (linha, coluna) para apontar o tamanho da submatriz [quadrada]
+'''
+    n, _ = M.shape
+    if index + size > n:
+        raise IndexError(f'{index} + {size} > {n}')
+    blocks = dict()
+    for j in range(index, n, size):
+        i = j - index
+        blocks[i, j] = size
+        if i == j:
+            continue
+        blocks[j, i] = size
+    return blocks
+
+
 def extract_submatrices(
-    T: NDArrayFloat, k: int,
-    r0: int = 0, c0: int = 0,
-    size: int | None = None,
-) -> set[Submatrix]:
-    # pylint: disable=invalid-name
-    '''extrai submatrizes'''
-    if size is None:
-        size = T.shape[0]
-    if size == k:
-        return {Submatrix(T[r0:r0 + k, c0:c0 + k], r0, c0)}
-    if size == 4*k:
-        return {
-            Submatrix(
-                T[
-                    r0 + rows_step:r0 + rows_step + k,
-                    c0 + cols_step:c0 + cols_step + k
-                ],
-                r0 + rows_step, c0 + cols_step
+    T: NDArrayFloat,
+    k: int,
+    l: int | None = None,
+) -> tuple[list[NDArrayFloat], set[NDArrayFloat]]:
+    '''_'''
+    n = T.shape[0]
+    if l is None:
+        l = int(np.log2(n // k))
+    blocks = dict()
+    idx = 4*k
+    for block_size in (2**i * k for i in range(2, l)):
+        blocks = dict(
+            it.chain(
+                extract_symmetric_block(T, idx, block_size).items(),
+                blocks.items()
             )
-            for rows_step in range(0, 4*k, k)
-            for cols_step in range(0, 4*k, k)
-        }
-    s = (0, size//4, size//2, 3*size//4, size)
-    return ft.reduce(
-        op.or_, [
-            extract_submatrices(T, k, r0, c0, size // 2),
-            extract_submatrices(T, k, r0 + s[1], c0 + s[1], size // 2),
-            extract_submatrices(T, k, r0 + s[2], c0 + s[2], size // 2),
-        ], set()
-    ) | {
-        Submatrix(T[r0:r0 + s[1], c0 + s[2]:c0 + s[3]], r0, c0 + s[2]),
-        Submatrix(T[r0:r0 + s[1], c0 + s[3]:c0 + s[4]], r0, c0 + s[3]),
-        Submatrix(
-            T[r0 + s[1]:r0 + s[2], c0 + s[3]:c0 + s[4]],
-            r0 + s[1],
-            c0 + s[3],
-        ),
-        Submatrix(T[r0 + s[2]:r0 + s[3], c0:c0 + s[1]], r0 + s[2], c0),
-        Submatrix(T[r0 + s[3]:r0 + s[4], c0:c0 + s[1]], r0 + s[3], c0),
-        Submatrix(
-            T[r0 + s[3]:r0 + s[4], c0 + s[1]:c0 + s[2]],
-            r0 + s[3],
-            c0 + s[1],
-        ),
-    }
+        )
+        idx += block_size
+    blocks |= extract_symmetric_block(T, 0, 2*k)
+    blocks |= extract_symmetric_block(T, 2*k, 2*k)
+    for ((row, col), block_size) in list(blocks.items()):
+        half_size = block_size // 2
+        half_row = row + half_size
+        half_col = col + half_size
+        if blocks.get((row, col), float('inf')) > half_size:
+            blocks[row, col] = half_size
+        if blocks.get((half_row, col), float('inf')) > half_size:
+            blocks[half_row, col] = half_size
+        if blocks.get((row, half_col), float('inf')) > half_size:
+            blocks[row, half_col] = half_size
+        if blocks.get((half_row, half_col), float('inf')) > half_size:
+            blocks[half_row, half_col] = half_size
+    return blocks
+
+
+def visualize_blocks(
+    T: npt.NDArray,
+    blocks: dict[tuple[int, int], int],
+) -> dict[int, npt.NDArray]:
+    n = T.shape[0]
+    Ts = {sub_n: np.zeros((n, n)) for sub_n in set(blocks.values())}
+    for ((row, col), size) in blocks.items():
+        Ts[size][row:row + size, col:col + size] = \
+            T[row:row + size, col:col + size]
+    return Ts
+
+
+def interpolate_matrix(M: npt.NDArray, k: int) -> npt.NDArray:
+    n = M.shape[0]
+    interpolated = M[n//k - k::n//k, n//k - k::n//k]
+    return interpolated
 
 
 def is_zero_or_power_of_2(value: int) -> bool:
