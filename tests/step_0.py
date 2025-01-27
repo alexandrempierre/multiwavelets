@@ -9,7 +9,7 @@ __email__ = 'alexandrempierre [at] gmail [dot] com'
 
 import numpy as np
 from .. import step_0
-from .step_0_values import (
+from ._step_0_values import (
     Test_s_values, Test_mu_values, Test_sigma_values
 )
 

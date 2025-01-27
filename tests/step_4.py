@@ -1,3 +1,4 @@
+# ruff: noqa: E741
 '''módulo step_4
 '''
 
@@ -9,12 +10,8 @@ __email__ = 'alexandrempierre [at] gmail [dot] com'
 import random
 
 import numpy as np
-import numpy.typing as npt
 #
 from .. import step_4 as s4
-
-
-EXP_MAX = 100
 
 
 class Test_ZeroOrPowerOf2:
@@ -194,7 +191,7 @@ correto
     
 
 class TestOperatorMatrix:
-    '''_'''
+    '''testes da construção do operador'''
     def test_operator_matrix_constant(self):
         n = 4
         xs = np.array([0, 1/3, 2/3, 1])
@@ -206,7 +203,6 @@ class TestOperatorMatrix:
     def test_operator_matrix_inv_subtraction(self):
         def kernel(x, t):
             return 1/(x - t)
-        n = 4
         xs = np.array([0, 1/3, 2/3, 1])
         T_check = np.array([
             [0,   -1,   -1/2, -1/3],
@@ -216,8 +212,3 @@ class TestOperatorMatrix:
         ])
         T = s4.operator_matrix(xs, kernel)
         assert np.allclose(T_check, T)
-
-# 1 1 1 1
-# 1 1 1 1
-# 1 1 1 1
-# 1 1 1 1
